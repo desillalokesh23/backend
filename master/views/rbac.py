@@ -11,17 +11,12 @@ from master.serializers.rbac import (
     RolePermissionMatrixSerializer,
     RoleSerializer,
     SystemPermissionSerializer,
-<<<<<<< HEAD
     TenantUserCreateSerializer,
     TenantUserDetailSerializer,
     TenantUserListSerializer,
     TenantUserUpdateSerializer,
 )
 from master.services.permission_service import sync_role_permissions
-=======
-    TenantUserSerializer,
-)
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
 from master.views.base import TenantScopedViewSet
 
 
@@ -43,27 +38,17 @@ class RoleViewSet(TenantScopedViewSet):
         if isinstance(perm_map, list):
             perm_map = {item['codename']: item.get('granted', False) for item in perm_map}
         sync_data = {k: bool(v) for k, v in perm_map.items()}
-<<<<<<< HEAD
-=======
-        from master.services.permission_service import sync_role_permissions
-
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
         sync_role_permissions(role, sync_data)
         return Response(RolePermissionMatrixSerializer(role).data)
 
 
 class TenantUserViewSet(TenantScopedViewSet):
     queryset = User.objects.filter(is_superuser=False)
-<<<<<<< HEAD
-=======
-    serializer_class = TenantUserSerializer
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
     required_module = TenantModule.MASTERS
 
     def get_permissions(self):
         return [IsAuthenticatedTenantUser(), IsTenantAdmin()]
 
-<<<<<<< HEAD
     def get_serializer_class(self):
         if self.action == 'create':
             return TenantUserCreateSerializer
@@ -83,11 +68,6 @@ class TenantUserViewSet(TenantScopedViewSet):
         return Response(
             TenantUserDetailSerializer(user, context={'request': request}).data,
             status=status.HTTP_201_CREATED,
-=======
-    def get_queryset(self):
-        return User.objects.filter(tenant=self.request.user.tenant).select_related(
-            'role', 'branch'
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
         )
 
     def perform_destroy(self, instance):

@@ -16,7 +16,6 @@ class ProfileView(APIView):
     def get(self, request):
         tenant = request.user.tenant
         check_profile_completion(tenant)
-<<<<<<< HEAD
         return Response(self._serialize(tenant, request))
 
     def patch(self, request):
@@ -26,12 +25,6 @@ class ProfileView(APIView):
                 {'detail': 'Profile is under review. Editing is disabled until admin completes review.'},
                 status=status.HTTP_403_FORBIDDEN,
             )
-=======
-        return Response(TenantProfileSerializer(tenant, context={'request': request}).data)
-
-    def patch(self, request):
-        tenant = request.user.tenant
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
         serializer = TenantProfileSerializer(
             tenant,
             data=request.data,
@@ -39,7 +32,6 @@ class ProfileView(APIView):
             context={'request': request},
         )
         serializer.is_valid(raise_exception=True)
-<<<<<<< HEAD
         try:
             TenantService.update_profile(tenant, serializer.validated_data, user=request.user)
         except ValueError as exc:
@@ -67,11 +59,3 @@ class ProfileSubmitReviewView(APIView):
             return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         tenant.refresh_from_db()
         return Response(ProfileView()._serialize(tenant, request))
-=======
-        TenantService.update_profile(tenant, serializer.validated_data, user=request.user)
-        tenant.refresh_from_db()
-        completed, missing = check_profile_completion(tenant)
-        data = TenantProfileSerializer(tenant, context={'request': request}).data
-        data['missing_profile_fields'] = missing
-        return Response(data, status=status.HTTP_200_OK)
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8

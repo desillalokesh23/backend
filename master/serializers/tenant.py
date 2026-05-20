@@ -6,10 +6,7 @@ from master.models.tenant import Tenant
 class TenantProfileSerializer(serializers.ModelSerializer):
     tenant_id = serializers.CharField(source='tenant_code', read_only=True)
     tenant_status = serializers.CharField(source='status', read_only=True)
-<<<<<<< HEAD
     is_profile_locked = serializers.BooleanField(read_only=True)
-=======
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
 
     class Meta:
         model = Tenant
@@ -39,12 +36,9 @@ class TenantProfileSerializer(serializers.ModelSerializer):
             'home_branch_gps_lat',
             'home_branch_gps_lng',
             'profile_completed',
-<<<<<<< HEAD
             'profile_review_status',
             'profile_submitted_at',
             'is_profile_locked',
-=======
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
         ]
         read_only_fields = [
             'id',
@@ -55,10 +49,7 @@ class TenantProfileSerializer(serializers.ModelSerializer):
             'tenant_status',
             'created_at',
             'profile_completed',
-<<<<<<< HEAD
             'profile_review_status',
             'profile_submitted_at',
             'is_profile_locked',
-=======
->>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
         ]
