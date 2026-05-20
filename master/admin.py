@@ -17,13 +17,20 @@ class TenantAdmin(admin.ModelAdmin):
         'email_id',
         'status',
         'profile_completed',
+<<<<<<< HEAD
         'profile_review_status',
         'profile_submitted_at',
+=======
+>>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
         'subscription_start',
         'subscription_end',
         'created_at',
     )
+<<<<<<< HEAD
     list_filter = ('status', 'profile_review_status', 'profile_completed', 'country')
+=======
+    list_filter = ('status', 'profile_completed', 'country')
+>>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
     search_fields = ('tenant_code', 'company_name', 'email_id', 'contact_person')
     readonly_fields = ('tenant_code', 'created_at', 'updated_at', 'approved_at')
     actions = ['approve_tenants', 'activate_tenants', 'freeze_tenants']
@@ -59,7 +66,11 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
+<<<<<<< HEAD
     list_display = ('order_id', 'name', 'tenant', 'is_active')
+=======
+    list_display = ('name', 'tenant', 'is_active')
+>>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
     list_filter = ('is_active', 'tenant')
     search_fields = ('name',)
 

@@ -29,8 +29,11 @@ def build_auth_payload(user):
         'tenant_status': user.tenant.status if user.tenant else None,
         'profile_completed': user.tenant.profile_completed if user.tenant else True,
         'tenant_approved': user.tenant.is_approved if user.tenant else True,
+<<<<<<< HEAD
         'profile_review_status': user.tenant.profile_review_status if user.tenant else None,
         'is_profile_locked': user.tenant.is_profile_locked if user.tenant else False,
+=======
+>>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
     }
     return {
         'access': str(refresh.access_token),
@@ -90,8 +93,11 @@ class MeView(APIView):
             'tenant_status': user.tenant.status if user.tenant else None,
             'profile_completed': completed,
             'tenant_approved': user.tenant.is_approved if user.tenant else True,
+<<<<<<< HEAD
             'profile_review_status': user.tenant.profile_review_status if user.tenant else None,
             'is_profile_locked': user.tenant.is_profile_locked if user.tenant else False,
+=======
+>>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
             'missing_profile_fields': missing,
         }
         return Response(AuthUserSerializer(data).data | {'missing_profile_fields': missing})

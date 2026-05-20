@@ -12,7 +12,11 @@ from master.views.masters import (
     VehicleTypeViewSet,
     WarehouseViewSet,
 )
+<<<<<<< HEAD
 from master.views.profile import ProfileSubmitReviewView, ProfileView
+=======
+from master.views.profile import ProfileView
+>>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
 from master.views.rbac import RoleViewSet, SystemPermissionViewSet, TenantUserViewSet
 
 router = DefaultRouter()
@@ -33,6 +37,9 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name='auth-refresh'),
     path('auth/me/', MeView.as_view(), name='auth-me'),
     path('profile/', ProfileView.as_view(), name='profile'),
+<<<<<<< HEAD
     path('profile/submit-review/', ProfileSubmitReviewView.as_view(), name='profile-submit-review'),
+=======
+>>>>>>> 9909f3cf74a537c9b94dc4a66767f0080f0f36b8
     path('', include(router.urls)),
 ]
