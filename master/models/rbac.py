@@ -24,14 +24,13 @@ class SystemPermission(models.Model):
 class Role(BaseModel):
     tenant = models.ForeignKey('master.Tenant', on_delete=models.CASCADE, related_name='roles')
     name = models.CharField(max_length=100)
-    order_id = models.PositiveIntegerField(default=1)
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'master_role'
-        unique_together = [('tenant', 'name'), ('tenant', 'order_id')]
-        ordering = ['order_id', 'name']
+        unique_together = [('tenant', 'name')]
+        ordering = ['name']
 
     def __str__(self):
         return f'{self.name} ({self.tenant.tenant_code})'

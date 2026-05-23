@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission
 
+from master.constants.tenant import ProfileReviewStatus
 from master.models.rbac import RolePermission
 
 
@@ -16,7 +17,14 @@ class HasModulePermission(BasePermission):
         if user.is_superuser or getattr(user, 'is_super_admin', False):
             return True
         if getattr(user, 'is_tenant_admin', False):
-            return True
+            # Tenant admins can always list/view masters, but cannot create/update/delete
+            # until profile is completed AND approved by super admin.
+            if request.method in ('GET', 'HEAD', 'OPTIONS'):
+                return True
+            tenant = getattr(user, 'tenant', None)
+            if tenant and getattr(tenant, 'profile_completed', False) and getattr(tenant, 'profile_review_status', None) == ProfileReviewStatus.APPROVED:
+                return True
+            return False
 
         module = getattr(view, 'required_module', None)
         action = getattr(view, 'required_action', 'view')

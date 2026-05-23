@@ -29,6 +29,7 @@ class TenantProfileSerializer(serializers.ModelSerializer):
             'tenant_status',
             'created_at',
             'company_logo',
+            'profile_picture',
             'gst_document',
             'pan_document',
             'bank_document',

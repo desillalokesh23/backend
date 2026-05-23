@@ -10,17 +10,8 @@ User = get_user_model()
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
-        fields = ['id', 'name', 'order_id', 'description', 'is_active', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'is_active', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
-
-    def validate_order_id(self, value):
-        tenant = self.context['request'].user.tenant
-        qs = Role.objects.filter(tenant=tenant, order_id=value, is_deleted=False)
-        if self.instance:
-            qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            raise serializers.ValidationError('Order ID must be unique within your organization.')
-        return value
 
     def validate_name(self, value):
         tenant = self.context['request'].user.tenant

@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from master.constants.tenant import TenantStatus
+from django.utils import timezone
+
+from master.constants.tenant import ProfileReviewStatus, TenantStatus
 from master.models.masters import Branch, Driver, PackageType, RouteMaster, ServiceType, VehicleType, Warehouse
 from master.models.rbac import Role, RolePermission, SystemPermission
 from master.models.tenant import Tenant
@@ -19,21 +21,31 @@ class TenantAdmin(admin.ModelAdmin):
         'profile_completed',
         'profile_review_status',
         'profile_submitted_at',
-        'subscription_start',
-        'subscription_end',
+        'approved_at',
         'created_at',
     )
     list_filter = ('status', 'profile_review_status', 'profile_completed', 'country')
     search_fields = ('tenant_code', 'company_name', 'email_id', 'contact_person')
-    readonly_fields = ('tenant_code', 'created_at', 'updated_at', 'approved_at')
-    actions = ['approve_tenants', 'activate_tenants', 'freeze_tenants']
+    readonly_fields = ('tenant_code', 'created_at', 'updated_at', 'approved_at', 'profile_submitted_at')
+    actions = ['approve_tenants', 'full_approve_profile', 'activate_tenants', 'freeze_tenants']
+    list_select_related = ('created_by',)
 
-    @admin.action(description='Approve selected tenants')
+    @admin.action(description='Approve selected tenants (status only)')
     def approve_tenants(self, request, queryset):
         for tenant in queryset.filter(status=TenantStatus.PENDING):
             tenant.status = TenantStatus.APPROVED
             tenant.save(update_fields=['status', 'updated_at'])
             send_tenant_approved_notification(tenant)
+
+    @admin.action(description='Full Approve: status + profile review + notify')
+    def full_approve_profile(self, request, queryset):
+        for tenant in queryset:
+            if tenant.profile_review_status != ProfileReviewStatus.APPROVED:
+                tenant.status = TenantStatus.APPROVED
+                tenant.profile_review_status = ProfileReviewStatus.APPROVED
+                tenant.approved_at = timezone.now()
+                tenant.save(update_fields=['status', 'profile_review_status', 'approved_at', 'updated_at'])
+                send_tenant_approved_notification(tenant)
 
     @admin.action(description='Activate selected tenants')
     def activate_tenants(self, request, queryset):
@@ -59,7 +71,7 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ('order_id', 'name', 'tenant', 'is_active')
+    list_display = ('name', 'tenant', 'is_active')
     list_filter = ('is_active', 'tenant')
     search_fields = ('name',)
 

@@ -49,7 +49,6 @@ class AuthService:
         admin_role = Role.objects.create(
             tenant=tenant,
             name='Tenant Admin',
-            order_id=1,
             description='Default administrator role with full masters access',
             created_by=user,
         )

@@ -32,6 +32,7 @@ class Tenant(BaseModel):
         db_index=True,
     )
     company_logo = models.ImageField(upload_to=tenant_upload_path, null=True, blank=True)
+    profile_picture = models.ImageField(upload_to=tenant_upload_path, null=True, blank=True)
     gst_document = models.FileField(upload_to=tenant_upload_path, null=True, blank=True)
     pan_document = models.FileField(upload_to=tenant_upload_path, null=True, blank=True)
     bank_document = models.FileField(upload_to=tenant_upload_path, null=True, blank=True)

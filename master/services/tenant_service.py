@@ -13,6 +13,7 @@ class TenantService:
 
         file_fields = [
             'company_logo',
+            'profile_picture',
             'gst_document',
             'pan_document',
             'bank_document',

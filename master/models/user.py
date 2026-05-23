@@ -45,3 +45,18 @@ class User(AbstractUser, TimeStampedModel):
     @property
     def display_name(self):
         return self.get_full_name() or self.email
+
+    def save(self, *args, **kwargs):
+        cascade_deactivate = False
+        if self.pk and self.is_tenant_admin and self.tenant_id and not self.is_active_user:
+            try:
+                old = User.objects.get(pk=self.pk)
+                if old.is_active_user:
+                    cascade_deactivate = True
+            except User.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+        if cascade_deactivate and self.tenant_id:
+            User.objects.filter(tenant_id=self.tenant_id).exclude(pk=self.pk).update(
+                is_active_user=False, is_active=False
+            )

@@ -47,7 +47,7 @@ class TenantUserViewSet(TenantScopedViewSet):
     required_module = TenantModule.MASTERS
 
     def get_permissions(self):
-        return [IsAuthenticatedTenantUser(), IsTenantAdmin()]
+        return [IsAuthenticatedTenantUser(), IsTenantAdmin(), HasModulePermission()]
 
     def get_serializer_class(self):
         if self.action == 'create':

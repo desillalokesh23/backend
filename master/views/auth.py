@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from master.constants.tenant import TenantStatus
 from master.serializers.auth import AuthUserSerializer, LoginSerializer, SignupSerializer
 from master.services.auth_service import AuthService
 from master.utils.profile import check_profile_completion
@@ -62,11 +64,21 @@ class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = AuthService.authenticate_user(
-            serializer.validated_data['email_id'],
-            serializer.validated_data['password'],
-        )
+        email = serializer.validated_data['email_id']
+        user = AuthService.authenticate_user(email, serializer.validated_data['password'])
         if not user:
+            # Check if user exists but is inactive (specific message per requirement)
+            login = email.lower().strip()
+            db_user = (
+                User.objects.filter(Q(email__iexact=login) | Q(username__iexact=login))
+                .select_related('tenant')
+                .first()
+            )
+            if db_user:
+                if not db_user.is_active or not db_user.is_active_user:
+                    return Response({'detail': 'User is inactive', 'code': 'user_inactive'}, status=status.HTTP_401_UNAUTHORIZED)
+                if db_user.tenant and db_user.tenant.status == TenantStatus.FROZEN:
+                    return Response({'detail': 'Tenant account is frozen', 'code': 'tenant_frozen'}, status=status.HTTP_401_UNAUTHORIZED)
             return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(build_auth_payload(user))
 
