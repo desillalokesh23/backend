@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from django.db import transaction
 from django.db.models import Q
+import logging
 
 from master.constants.modules import MODULE_ACTIONS, MODULES
 from master.constants.tenant import TenantStatus
@@ -11,6 +12,8 @@ from master.services.email_service import send_tenant_signup_notification
 from master.services.permission_service import seed_system_permissions, sync_role_permissions
 from master.validators.auth import validate_signup_password
 
+logger = logging.getLogger(__name__)
+
 
 class AuthService:
     @staticmethod
@@ -20,8 +23,10 @@ class AuthService:
         email = email_id.lower().strip()
 
         if Tenant.objects.filter(email_id=email).exists():
+            logger.warning(f"Signup attempt with existing email: {email}")
             raise ValueError('A tenant with this email already exists.')
         if User.objects.filter(email=email).exists():
+            logger.warning(f"Signup attempt with existing user email: {email}")
             raise ValueError('A user with this email already exists.')
 
         tenant = Tenant.objects.create(
@@ -57,6 +62,7 @@ class AuthService:
         user.role = admin_role
         user.save(update_fields=['role'])
 
+        logger.info(f"New tenant registered: {tenant.tenant_code} - {tenant.company_name}")
         send_tenant_signup_notification(tenant, user)
         return tenant, user
 
@@ -69,9 +75,14 @@ class AuthService:
             .first()
         )
         if not user or not user.check_password(password):
+            logger.warning(f"Failed login attempt for email: {email}")
             return None
         if not user.is_active or not user.is_active_user:
+            logger.warning(f"Inactive user login attempt: {email}")
             return None
         if user.tenant and user.tenant.status == TenantStatus.FROZEN:
+            logger.warning(f"Frozen tenant login attempt: {email}")
             return None
+
+        logger.info(f"Successful login: {user.email} (tenant: {user.tenant.tenant_code if user.tenant else 'None'})")
         return user

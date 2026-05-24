@@ -1,0 +1,9 @@
+[2026-05-24 10:08:10] [INFO] [django.utils.autoreload] Watching for file changes with StatReloader
+[2026-05-24 10:08:36] [INFO] [django.utils.autoreload] /home/socialbytes/new/Global TMS/backend/master/services/auth_service.py changed, reloading.
+[2026-05-24 10:08:36] [INFO] [django.utils.autoreload] Watching for file changes with StatReloader
+[2026-05-24 10:08:48] [INFO] [django.utils.autoreload] /home/socialbytes/new/Global TMS/backend/master/services/auth_service.py changed, reloading.
+[2026-05-24 10:08:49] [INFO] [django.utils.autoreload] Watching for file changes with StatReloader
+[2026-05-24 10:08:58] [INFO] [django.utils.autoreload] /home/socialbytes/new/Global TMS/backend/master/services/auth_service.py changed, reloading.
+[2026-05-24 10:08:58] [INFO] [django.utils.autoreload] Watching for file changes with StatReloader
+[2026-05-24 10:09:07] [INFO] [django.utils.autoreload] /home/socialbytes/new/Global TMS/backend/master/services/auth_service.py changed, reloading.
+[2026-05-24 10:09:08] [INFO] [django.utils.autoreload] Watching for file changes with StatReloader
